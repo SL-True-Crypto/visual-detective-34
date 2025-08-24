@@ -8,7 +8,7 @@ import SimilaritySlider from '@/components/SimilaritySlider';
 import ImageResults from '@/components/ImageResults';
 import { ImageData, SimilarityResult, findSimilarImages } from '@/lib/imageUtils';
 import { useToast } from '@/hooks/use-toast';
-import heroImage from '@/assets/hero-image.jpg';
+
 
 const Index = () => {
   const [referenceImage, setReferenceImage] = useState<ImageData[]>([]);
@@ -72,13 +72,7 @@ const Index = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-20" />
-        <div className="absolute inset-0">
-          <img 
-            src={heroImage} 
-            alt="AI Image Similarity Detection" 
-            className="w-full h-full object-cover opacity-30" 
-          />
-        </div>
+        <div className="absolute inset-0 bg-gradient-subtle opacity-40" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center space-x-2">
