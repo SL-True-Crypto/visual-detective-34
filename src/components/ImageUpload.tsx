@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Image as ImageIcon, X } from 'lucide-react';
+import { Upload, Image as ImageIcon, X, Folder } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ImageData, fileToDataUrl, isImageFile } from '@/lib/imageUtils';
@@ -24,6 +24,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   maxFiles = 1
 }) => {
   const { toast } = useToast();
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     try {
@@ -80,6 +81,47 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     multiple
   });
 
+  const handleFolderSelect = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      const imageFiles = Array.from(files).filter(isImageFile);
+      
+      if (imageFiles.length === 0) {
+        toast({
+          title: "කිසිම ෆොටෝ ගැලපෙන්නේ නෑ",
+          description: "මේ folder එකේ valid image files නෑ (PNG, JPG, වගේ)",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const filesToProcess = multiple ? 
+        imageFiles.slice(0, maxFiles) : 
+        [imageFiles[0]];
+
+      const imageDataPromises = filesToProcess.map(async (file) => {
+        const dataUrl = await fileToDataUrl(file);
+        return { file, dataUrl };
+      });
+
+      const newImages = await Promise.all(imageDataPromises);
+      onImagesSelected(multiple ? [...images, ...newImages] : newImages);
+
+      toast({
+        title: "Folder ලොඩ් වුණා",
+        description: `සාර්ථකව ෆොටෝ ${newImages.length}ක් ලොඩ් කරා`,
+      });
+    } catch (error) {
+      toast({
+        title: "Folder ලොඩ් වෙන්නේ නෑ",
+        description: "Folder එකේ images process කරන්න බෑ",
+        variant: "destructive"
+      });
+    }
+  }, [images, multiple, maxFiles, onImagesSelected, toast]);
+
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
     onImagesSelected(newImages);
@@ -106,10 +148,34 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             <h3 className="text-lg font-semibold text-foreground">{title}</h3>
             <p className="text-sm text-muted-foreground mt-1">{description}</p>
           </div>
-          <Button variant="outline" size="sm" className="mt-2">
-            <ImageIcon className="h-4 w-4 mr-2" />
-            Choose {multiple ? 'Images' : 'Image'}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="mt-2">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Choose {multiple ? 'Images' : 'Image'}
+            </Button>
+            {multiple && (
+              <>
+                <input
+                  ref={folderInputRef}
+                  type="file"
+                  {...({ webkitdirectory: "" } as any)}
+                  multiple
+                  onChange={handleFolderSelect}
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={() => folderInputRef.current?.click()}
+                >
+                  <Folder className="h-4 w-4 mr-2" />
+                  Choose Folder
+                </Button>
+              </>
+            )}
+          </div>
           {isDragActive && (
             <p className="text-sm text-primary font-medium">Drop images here...</p>
           )}
