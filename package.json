@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+  "scripts": {"main": "electron/main.js",
+"electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
+"electron:dist": "npm run build && electron-builder"
+
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
