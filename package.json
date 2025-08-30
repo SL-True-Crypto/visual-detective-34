@@ -3,7 +3,26 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  {
+  "name": "vite_react_shadcn_ts",
+  "private": true,
+  "version": "0.0.0",
+  "main": "electron/main.js",
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build", 
+    "preview": "vite preview --port 8080",
+    "start": "vite",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
+    "electron:pack": "npm run build && electron-builder --dir",
+    "electron:dist": "npm run build && electron-builder",
+    "build:electron": "ELECTRON=true npm run build"
+  },
+  "dependencies": {
+    // ... rest of the file stays same
+
   "dev": "vite",
   "build": "vite build",
   "preview": "vite preview --port 8080",
@@ -13,15 +32,8 @@
   "electron:pack": "npm run build && electron-builder --dir",
   "electron:dist": "npm run build && electron-builder",
   "build:electron": "ELECTRON=true npm run build"
-}
+},
 
-
-    "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
