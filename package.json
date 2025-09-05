@@ -12,7 +12,8 @@
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
     "electron:pack": "npm run build && electron-builder --dir",
     "electron:dist": "npm run build && electron-builder",
-    "build:electron": "ELECTRON=true npm run build"
+    "build:electron": "ELECTRON=true npm run build",
+    "build:dev": "vite build --mode development"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
